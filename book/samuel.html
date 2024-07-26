@@ -1,0 +1,296 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Deployment of Samuel Code</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="deploy.html"><strong aria-hidden="true">1.</strong> Deployment of BotD</a></li><li class="chapter-item expanded "><a href="samuel.html" class="active"><strong aria-hidden="true">2.</strong> Deployment of Samuel Code</a></li><li class="chapter-item expanded "><a href="diag.html"><strong aria-hidden="true">3.</strong> Overall architecture</a></li><li class="chapter-item expanded "><a href="oauth.html"><strong aria-hidden="true">4.</strong> OAuth and KeyCloak</a></li><li class="chapter-item expanded "><a href="process.html"><strong aria-hidden="true">5.</strong> Access token and Architecture</a></li><li class="chapter-item expanded "><a href="bug.html"><strong aria-hidden="true">6.</strong> Bug Tracker</a></li><li class="chapter-item expanded "><a href="auth.html"><strong aria-hidden="true">7.</strong> Authentication</a></li><li class="chapter-item expanded "><a href="autho.html"><strong aria-hidden="true">8.</strong> Authorization</a></li><li class="chapter-item expanded "><a href="pkce.html"><strong aria-hidden="true">9.</strong> PKCE</a></li><li class="chapter-item expanded "><a href="bug_pkce.html"><strong aria-hidden="true">10.</strong> Bug tracker with PKCE</a></li><li class="chapter-item expanded "><a href="role.html"><strong aria-hidden="true">11.</strong> Roles</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="deployment-of-samuels-code"><a class="header" href="#deployment-of-samuels-code">Deployment of Samuel’s code</a></h1>
+<ul>
+<li>This set of code was written by Samuel, a senior student of IITM.</li>
+<li>It's designed to clean up data about web requests, like extracting dates and simplifying URLs.</li>
+<li>It has functionalities for conducting anomaly detection. <p align="center"><strong>Dataset Used</strong></p>
+</li>
+<li>This is an open source dataset available in Kaggle of an Iranian ecommerce website zanbil.ir.</li>
+<li>Heading of the dataset are IP Address, User, Timestamp, Request, Status Code, Bytes Sent, Referrer, User Agent and an Unknown Field indicated mostly by “-”.</li>
+<li>This contains more than 1 crore samples. <p align="center"><strong>Creating and Writing Database</strong></p>
+</li>
+<li>Initial step involves setting up the development environment by installing Go and Julia programming languages, along with their corresponding packages: DataFrame for Julia and SQLite for Go.</li>
+<li>Following the setup, we proceed with data preprocessing tasks. Initially, we access the specified access log file and compile a regular expression to extract pertinent information from each log line.</li>
+<li>Subsequently, we establish a connection to an SQLite database, "kaggleDataset.db," utilizing the go-sqlite3 driver. Within this database, we commence a transaction to facilitate batch processing of SQL statements.</li>
+<li>Next, we ensure the existence of a table named "parsed_data" within the database schema. This table encompasses columns to store IP addresses, requests, user agents, timestamps, status codes, and bytes sent.</li>
+<li>We then prepare a SQL query designed to insert parsed data into the "parsed_data" table. This query is instrumental in reading each line of the access log file, parsing it using the previously compiled regular expression, and subsequently inserting the parsed data into the database.</li>
+<li>Finally, to persist the changes made to the database, we commit the transaction. This encapsulates the entirety of the data preprocessing pipeline, enabling efficient storage and manipulation of pertinent log data for subsequent analysis and insights. <p align="center"><strong>Data Processing Functions</strong></p>
+</li>
+</ul>
+<p>We have four key functions designed for data processing:</p>
+<ol>
+<li>appendDate!(logs): This function enhances the DataFrame by incorporating a new column that extracts and appends the date component from a datetime column. For instance, it converts a timestamp like "2023-05-22 15:30:00" to a date format, "2023-05-22".</li>
+<li>normalizeRequests!(logs): Here, the focus is on standardizing the request data within the DataFrame. This might entail actions such as scaling numeric columns to a uniform range or converting categorical data into a consistent format. For example, it could ensure that all IP addresses are presented in a consistent case or format.</li>
+<li>removeMPrefix!(logs): This function targets the removal of a specific prefix, 'm', from designated fields or entries in the DataFrame. By doing so, it aids in data cleanup, transforming entries like "m12345" to "12345".</li>
+<li>removeRapidGrails(logs): This function filters out specific types of data entries or patterns deemed as noise or irrelevant. It's particularly useful for eliminating multiple rapid requests originating from the same IP address within a short timeframe, thus enhancing the overall quality of the dataset.<p align="center"><strong>Data Analysis</strong></p>
+</li>
+</ol>
+<p><strong>Count_stats table</strong></p>
+<ul>
+<li>This table encapsulates IP address frequency data, presenting the occurrence count of each IP address and facilitates the computation of rankings for individual IP addresses based on their frequency of occurrence.</li>
+<li>The occurrence of unusually high request rates or discernible patterns in accessing specific URLs within this dataset may suggest the presence of bot activity.</li>
+</ul>
+<p><strong>Transition table</strong></p>
+<ul>
+<li>This involves traversing each row (request) within the provided DataFrame ip_requests.</li>
+<li>Subsequently, it constructs a weighted graph wherein each edge signifies a transition from one HTTP request to another, with the weight denoting the frequency of that transition.</li>
+<li>Two variables first_request and prev_req are initialized. first_request is set to true to indicate that the current request is the first one, and prev_req is set to nothing to indicate that there is no previous request yet.</li>
+<li>For the first request, it sets the ip and prev_req variables based on the IP address and request of the first row.</li>
+<li>For each subsequent request, it checks if it's the same as the previous request. If it is, it continues to the next iteration without updating the graph, as transitions from the same request to itself are not considered.</li>
+<li>If the current request is different from the previous one, it forms an edge from the previous request to the current one.</li>
+<li>The edges of this weighted graph are then sorted in descending order of their weights, utilizing Introsort, a hybrid sorting algorithm amalgamating quicksort, heapsort, and insertion sort.</li>
+<li>Upon sorting, the source node, destination node, and weight (frequency) of each edge are extracted from the sorted graph.</li>
+<li>Subsequently, a DataFrame named transition_table is generated, housing the source, destination, and weight columns.</li>
+<li>These columns encapsulate transitions occurring between HTTP requests, thereby providing a structured representation of the transition dynamics within the dataset.</li>
+<li>A dictionary named weighted_graph is initialized to store the weighted edges of the graph.</li>
+</ul>
+<p><strong>Why is this created</strong></p>
+<ul>
+<li>This transforms raw web request logs into a structured format, which is pivotal in unveiling the navigation patterns of users as they interact with the website.</li>
+<li>Following the generation of the transition table, the subsequent step involves the creation of the 'anomaly_score_raw' table, which calculates an anomaly score for each IP address based on the count of rare transitions.</li>
+<li>This is done to pinpoint IP addresses exhibiting a high incidence of uncommon transitions, potentially indicative of anomalous behavior.</li>
+<li>Subsequently, the 'anomaly_ratio' table is created to calculate the normalized anomaly score for each IP address by dividing the raw anomaly score by the total number of edges.</li>
+<li>This is done to standardize the anomaly scores in relation to the overall activity observed, thereby furnishing a more discernible indicator of anomalous behavior adjusted for the individual activity levels of each IP address.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="deploy.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="diag.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="deploy.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="diag.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
