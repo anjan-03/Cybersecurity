@@ -1,7 +1,7 @@
 # Bug Tracker Application
 Bug tracker application is going to be a spring boot application, which supports the functionality of an OAuth client.
 
-This bug tracker application runs on port 8080
+This bug tracker application runs on port 8090, since BurpsuitePro runs on 8080 on the same desktop.
 
 <img src="Image/bug.png" alt="Bug tracker phases">
 
